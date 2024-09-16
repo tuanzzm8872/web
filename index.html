@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đếm ngược thời gian</title>
+    <style>
+        /* Đặt lại margin và padding mặc định của trình duyệt */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Định dạng cho toàn bộ trang */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('https://png.pngtree.com/thumb_back/fh260/background/20210605/pngtree-dark-abstract-geometric-stories-lines-triangle-background-landing-vertical-app-decorative-image_726430.jpg') no-repeat center center/cover;
+            color: #fff;
+        }
+
+        /* Định dạng cho hộp đếm ngược */
+        .countdown-container {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Định dạng tiêu đề */
+        .title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Định dạng số đếm ngược */
+        #countdown {
+            font-size: 80px;
+            letter-spacing: 8px;
+        }
+
+        /* Định dạng nhãn thời gian */
+        .label {
+            font-size: 20px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        /* Mỗi nhãn nhỏ */
+        .label span {
+            margin: 0 15px;
+        }
+        
+        /* Hiệu ứng khi hết giờ */
+        #countdown.over {
+            color: #ff3b3b;
+        }
+
+        /* Hiệu ứng khi hover */
+        .countdown-container:hover {
+            background-color: rgba(0, 0, 0, 0.85);
+            transition: background-color 0.3s ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="countdown-container">
+        <div class="title">Đếm Ngược Thời Gian</div>
+        <div id="countdown">00:00:00</div>
+        <div class="label">
+            <span>Ngày</span>
+            <span>Giờ</span>
+            <span>Phút</span>
+            <span>Giây</span>
+        </div>
+    </div>
+
+    <script>
+        // Thiết lập thời gian đếm ngược (ví dụ: 2 ngày 5 giờ 50 phút)
+        var countdownDate = new Date().getTime() + (2 * 24 * 60 * 60 * 1000) + (5 * 60 * 60 * 1000) + (50 * 60 * 1000);
+
+        // Hàm khởi tạo đếm ngược
+        var countdownFunction = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countdownDate - now;
+
+            // Tính toán thời gian còn lại (ngày, giờ, phút, giây)
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Thêm số 0 vào phía trước nếu dưới 10
+            days = days < 10 ? "0" + days : days;
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            // Hiển thị kết quả trong phần tử có id="countdown"
+            document.getElementById("countdown").innerHTML = days + ":" + hours + ":" + minutes + ":" + seconds;
+
+            // Nếu hết thời gian
+            if (distance < 0) {
+                clearInterval(countdownFunction);
+                document.getElementById("countdown").classList.add('over');
+                document.getElementById("countdown").innerHTML = "Hết giờ!";
+            }
+        }, 1000);
+    </script>
+
+</body>
+</html>
