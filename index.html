@@ -19,7 +19,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: url('https://png.pngtree.com/thumb_back/fh260/background/20210605/pngtree-dark-abstract-geometric-stories-lines-triangle-background-landing-vertical-app-decorative-image_726430.jpg') no-repeat center center/cover;
+            background: url('https://via.placeholder.com/1920x1080') no-repeat center center/cover;
             color: #fff;
         }
 
@@ -69,14 +69,13 @@
             background-color: rgba(0, 0, 0, 0.85);
             transition: background-color 0.3s ease-in-out;
         }
-
     </style>
 </head>
 <body>
 
     <div class="countdown-container">
         <div class="title">Đếm Ngược Thời Gian</div>
-        <div id="countdown">00:00:00</div>
+        <div id="countdown">00:00:00:00</div>
         <div class="label">
             <span>Ngày</span>
             <span>Giờ</span>
@@ -87,35 +86,52 @@
 
     <script>
         // Thiết lập thời gian đếm ngược (ví dụ: 2 ngày 5 giờ 50 phút)
-        var countdownDate = new Date().getTime() + (2 * 24 * 60 * 60 * 1000) + (5 * 60 * 60 * 1000) + (50 * 60 * 1000);
+        var countdownDuration = (2 * 24 * 60 * 60 * 1000) + (5 * 60 * 60 * 1000) + (50 * 60 * 1000);
 
-        // Hàm khởi tạo đếm ngược
-        var countdownFunction = setInterval(function() {
-            var now = new Date().getTime();
-            var distance = countdownDate - now;
-
-            // Tính toán thời gian còn lại (ngày, giờ, phút, giây)
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Thêm số 0 vào phía trước nếu dưới 10
-            days = days < 10 ? "0" + days : days;
-            hours = hours < 10 ? "0" + hours : hours;
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-
-            // Hiển thị kết quả trong phần tử có id="countdown"
-            document.getElementById("countdown").innerHTML = days + ":" + hours + ":" + minutes + ":" + seconds;
-
-            // Nếu hết thời gian
-            if (distance < 0) {
-                clearInterval(countdownFunction);
-                document.getElementById("countdown").classList.add('over');
-                document.getElementById("countdown").innerHTML = "Hết giờ!";
+        function getCountdownEndTime() {
+            const endTime = localStorage.getItem('countdownEndTime');
+            if (endTime) {
+                return new Date(parseInt(endTime, 10));
+            } else {
+                const newEndTime = new Date().getTime() + countdownDuration;
+                localStorage.setItem('countdownEndTime', newEndTime);
+                return new Date(newEndTime);
             }
-        }, 1000);
+        }
+
+        function startCountdown() {
+            const countdownEndTime = getCountdownEndTime();
+            const countdownFunction = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = countdownEndTime - now;
+
+                // Tính toán thời gian còn lại (ngày, giờ, phút, giây)
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Thêm số 0 vào phía trước nếu dưới 10
+                const displayDays = days < 10 ? "0" + days : days;
+                const displayHours = hours < 10 ? "0" + hours : hours;
+                const displayMinutes = minutes < 10 ? "0" + minutes : minutes;
+                const displaySeconds = seconds < 10 ? "0" + seconds : seconds;
+
+                // Hiển thị kết quả trong phần tử có id="countdown"
+                document.getElementById("countdown").innerHTML = displayDays + ":" + displayHours + ":" + displayMinutes + ":" + displaySeconds;
+
+                // Nếu hết thời gian
+                if (distance < 0) {
+                    clearInterval(countdownFunction);
+                    document.getElementById("countdown").classList.add('over');
+                    document.getElementById("countdown").innerHTML = "Hết giờ!";
+                    localStorage.removeItem('countdownEndTime'); // Xóa thời gian đếm ngược khi hết giờ
+                }
+            }, 1000);
+        }
+
+        // Bắt đầu đếm ngược ngay khi tải trang
+        startCountdown();
     </script>
 
 </body>
